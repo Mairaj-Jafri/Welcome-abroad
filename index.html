@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Abroad Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #34495e;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .checkbox-group {
+            margin-top: 10px;
+        }
+        
+        .checkbox-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .required:after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Study Abroad Registration Form</h1>
+        <form id="studyAbroadForm" onsubmit="return validateForm(event)">
+            <!-- Personal Details -->
+            <div class="section">
+                <h2>Personal Details</h2>
+                <div class="form-group">
+                    <label class="required" for="fullName">Full Name</label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="country">Current Country of Residence</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+            </div>
+
+            <!-- Academic Background -->
+            <div class="section">
+                <h2>Academic Background</h2>
+                <div class="form-group">
+                    <label class="required" for="qualification">Highest Qualification</label>
+                    <select id="qualification" name="qualification" required>
+                        <option value="">Select Qualification</option>
+                        <option value="bachelors">Bachelor's</option>
+                        <option value="masters">Master's</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="fieldOfStudy">Field of Study</label>
+                    <input type="text" id="fieldOfStudy" name="fieldOfStudy" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="university">University</label>
+                    <input type="text" id="university" name="university" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="gpa">GPA/Percentage</label>
+                    <input type="text" id="gpa" name="gpa" required>
+                </div>
+                <div class="form-group">
+                    <label for="researchExp">Research Experience (if any)</label>
+                    <textarea id="researchExp" name="researchExp" rows="3"></textarea>
+                </div>
+            </div>
+
+            <!-- Study Abroad Plans -->
+            <div class="section">
+                <h2>Study Abroad Plans</h2>
+                <div class="form-group">
+                    <label class="required" for="intendedDegree">Intended Degree</label>
+                    <select id="intendedDegree" name="intendedDegree" required>
+                        <option value="">Select Degree</option>
+                        <option value="ms">MS</option>
+                        <option value="phd">PhD</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="targetCountries">Target Countries (up to 3)</label>
+                    <input type="text" id="targetCountries" name="targetCountries" required>
+                </div>
+                <div class="form-group">
+                    <label class="required" for="startDate">Preferred Start Date</label>
+                    <input type="month" id="startDate" name="startDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="required">Funding Plan</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="funding" value="self"> Self-funded
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="funding" value="scholarship"> Seeking Scholarship
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="funding" value="university"> University Funding
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="funding" value="other"> Other
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Required -->
+            <div class="section">
+                <h2>Support Required</h2>
+                <div class="form-group">
+                    <label>Select all that apply</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="university"> University Selection
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="application"> Application Process
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="proposal"> Research Proposal Development
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="scholarship"> Scholarship Applications
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="visa"> Visa Guidance
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="support" value="financial"> Financial Planning
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Consent -->
+            <div class="section">
+                <h2>Consent</h2>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="consent" required>
+                        I agree that the information provided is accurate and my data will be handled according to applicable privacy regulations
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit">Submit Application</button>
+        </form>
+    </div>
+
+    <script>
+        function validateForm(event) {
+            event.preventDefault();
+            
+            // Basic validation
+            const requiredFields = document.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    field.style.borderColor = 'red';
+                    isValid = false;
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            // Funding plan validation - at least one option must be selected
+            const fundingOptions = document.querySelectorAll('input[name="funding"]');
+            const hasFunding = Array.from(fundingOptions).some(option => option.checked);
+            if (!hasFunding) {
+                alert('Please select at least one funding option');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                alert('Form submitted successfully!');
+                // Here you would typically send the form data to your server
+                document.getElementById('studyAbroadForm').reset();
+            } else {
+                alert('Please fill in all required fields');
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
