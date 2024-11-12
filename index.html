@@ -93,7 +93,7 @@
 <body>
     <div class="form-container">
         <h1>Study Abroad Registration Form</h1>
-        <form id="studyAbroadForm" onsubmit="return validateForm(event)">
+        <form id="studyAbroadForm" >
             <!-- Personal Details -->
             <div class="section">
                 <h2>Personal Details</h2>
@@ -262,5 +262,80 @@
             return false;
         }
     </script>
+    <script>
+    const form = document.getElementById('studyAbroadForm');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyvA9rOO4O8xWqphx7A5GwXQOD3kAIH_J5pnWrprDVlbDllUMC4mlate-aDz85u6tSy/exec'; // Paste your Google Script URL here
+    
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // Get all form data
+        const formData = new FormData(form);
+        
+        // Collect checkbox values for funding and support
+        const fundingValues = [];
+        const supportValues = [];
+        document.querySelectorAll('input[name="funding"]:checked').forEach(checkbox => {
+            fundingValues.push(checkbox.value);
+        });
+        document.querySelectorAll('input[name="support"]:checked').forEach(checkbox => {
+            supportValues.push(checkbox.value);
+        });
+        
+        // Add collected checkbox values to formData
+        formData.set('funding', fundingValues.join(', '));
+        formData.set('support', supportValues.join(', '));
+        
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Submitting...';
+        submitButton.disabled = true;
+        
+        // Validate form
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                field.style.borderColor = 'red';
+                isValid = false;
+            } else {
+                field.style.borderColor = '#ddd';
+            }
+        });
+        
+        if (!isValid) {
+            alert('Please fill in all required fields');
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+            return;
+        }
+        
+        // Submit form
+        fetch(scriptURL, {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Success!', response);
+            alert('Form submitted successfully!');
+            form.reset();
+        })
+        .catch(error => {
+            console.error('Error!', error.message);
+            alert('Error submitting form. Please try again.');
+        })
+        .finally(() => {
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+        });
+    });
+</script>
+</body>
+</html>
 </body>
 </html>
