@@ -223,7 +223,9 @@
             </div>
 
             <button type="submit">Submit Application</button>
-        </form>
+        <form id="studyAbroadForm">
+    <!-- your existing form fields stay the same -->
+</form>
     </div>
 
     <script>
@@ -334,6 +336,132 @@
             submitButton.disabled = false;
         });
     });
- 
+ <script>
+    const form = document.getElementById('studyAbroadForm');
+    // Replace with your Google Apps Script URL
+    const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL';
+    
+    // Add debugging logs
+    const debugLog = [];
+    
+    function logDebug(message, data) {
+        const logEntry = {
+            timestamp: new Date().toISOString(),
+            message: message,
+            data: data
+        };
+        debugLog.push(logEntry);
+        console.log('Debug:', logEntry);
+    }
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // Log form submission attempt
+        logDebug('Form submission started', {
+            formData: Object.fromEntries(new FormData(form))
+        });
+
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.textContent = 'Submitting...';
+        submitButton.disabled = true;
+
+        // Validate form
+        const formData = new FormData(form);
+        const requiredFields = ['fullName', 'email', 'phone', 'country'];
+        const missingFields = [];
+        
+        requiredFields.forEach(field => {
+            if (!formData.get(field)) {
+                missingFields.push(field);
+            }
+        });
+
+        if (missingFields.length > 0) {
+            logDebug('Validation failed', { missingFields });
+            alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+            return;
+        }
+
+        // Send email notification function
+        function sendEmailNotification(formData) {
+            const emailData = new FormData();
+            emailData.append('email', 'your-email@example.com'); // Replace with your email
+            emailData.append('subject', 'New Form Submission');
+            emailData.append('message', JSON.stringify(Object.fromEntries(formData)));
+            
+            return fetch(scriptURL + '?action=sendEmail', {
+                method: 'POST',
+                body: emailData
+            });
+        }
+
+        // Submit form
+        fetch(scriptURL, {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+        .then(response => {
+            logDebug('Server response received', { 
+                status: response.status,
+                statusText: response.statusText 
+            });
+            
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(result => {
+            logDebug('Submission successful', { result });
+            alert('Form submitted successfully!');
+            form.reset();
+            
+            // Send email notification
+            return sendEmailNotification(formData);
+        })
+        .catch(error => {
+            logDebug('Error occurred', { 
+                error: error.message,
+                fullError: error.toString() 
+            });
+            alert('Error submitting form. Please try again.');
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+            
+            // Log final debug information
+            logDebug('Form submission completed', {
+                debugLog: debugLog
+            });
+        });
+    });
+
+    // Test connection function
+    function testConnection() {
+        fetch(scriptURL + '?action=test')
+        .then(response => response.text())
+        .then(result => {
+            console.log('Connection test result:', result);
+            alert('Connection test successful!');
+        })
+        .catch(error => {
+            console.error('Connection test failed:', error);
+            alert('Connection test failed. Check console for details.');
+        });
+    }
+
+    // Add test button (remove in production)
+    const testButton = document.createElement('button');
+    testButton.textContent = 'Test Connection';
+    testButton.onclick = testConnection;
+    form.parentNode.insertBefore(testButton, form.nextSibling);
+</script>
 </body>
 </html>
