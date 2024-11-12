@@ -264,7 +264,7 @@
     </script>
     <script>
     const form = document.getElementById('studyAbroadForm');
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyvA9rOO4O8xWqphx7A5GwXQOD3kAIH_J5pnWrprDVlbDllUMC4mlate-aDz85u6tSy/exec'; // Paste your Google Script URL here
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxSRqrgPn5ibkQJ2x6VNow92B_S-9WMTCKNxV2cV8gWn9xESbPs4Pyf6L3l1x4pyb9X/exec'; // Paste your Google Script URL here
     
     form.addEventListener('submit', e => {
         e.preventDefault();
@@ -335,5 +335,100 @@
         });
     });
 </script>
+    function doPost(e) {
+  try {
+    // Get action parameter
+    const action = e.parameter.action;
+    
+    // Handle different actions
+    if (action === 'sendEmail') {
+      return handleEmailNotification(e);
+    } else if (action === 'test') {
+      return handleConnectionTest();
+    }
+    
+    // Default form submission handling
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    const data = e.parameter;
+    
+    // Create logs sheet if it doesn't exist
+    let logsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Submission Logs');
+    if (!logsSheet) {
+      logsSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Submission Logs');
+      logsSheet.appendRow(['Timestamp', 'Status', 'Details']);
+    }
+    
+    // Log submission attempt
+    const timestamp = new Date();
+    logsSheet.appendRow([timestamp, 'Attempt', JSON.stringify(data)]);
+    
+    // Process form data
+    const formData = [
+      timestamp,
+      data.fullName || '',
+      data.email || '',
+      data.phone || '',
+      data.country || '',
+      data.qualification || '',
+      data.fieldOfStudy || '',
+      data.university || '',
+      data.gpa || '',
+      data.researchExp || '',
+      data.intendedDegree || '',
+      data.targetCountries || '',
+      data.startDate || '',
+      data.funding || '',
+      data.support || ''
+    ];
+    
+    // Append to sheet
+    sheet.appendRow(formData);
+    
+    // Log success
+    logsSheet.appendRow([timestamp, 'Success', 'Data saved successfully']);
+    
+    // Send email notification
+    sendEmailAlert(data);
+    
+    return ContentService.createTextOutput('Success!');
+    
+  } catch(error) {
+    // Log error
+    const logsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Submission Logs');
+    logsSheet.appendRow([new Date(), 'Error', error.toString()]);
+    
+    throw error;
+  }
+}
+
+function handleEmailNotification(e) {
+  const recipient = e.parameter.email;
+  const subject = e.parameter.subject;
+  const message = e.parameter.message;
+  
+  MailApp.sendEmail(recipient, subject, message);
+  
+  return ContentService.createTextOutput('Email sent');
+}
+
+function handleConnectionTest() {
+  return ContentService.createTextOutput('Connection successful');
+}
+
+function sendEmailAlert(data) {
+  const recipient = 'mairajjafri@gmail.com'; // Replace with your email
+  const subject = 'New Study Abroad Form Submission';
+  const message = `
+    New submission received:
+    Name: ${data.fullName}
+    Email: ${data.email}
+    Phone: ${data.phone}
+    Country: ${data.country}
+    
+    View full details in the Google Sheet.
+  `;
+  
+  MailApp.sendEmail(recipient, subject, message);
+}
 </body>
 </html>
