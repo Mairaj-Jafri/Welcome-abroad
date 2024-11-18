@@ -223,6 +223,32 @@
             </div>
 
             <button type="submit">Submit Application</button>
+            <!-- Add this to your existing form, before the submit button -->
+<div class="section">
+    <h2>Selected Package</h2>
+    <div class="form-group">
+        <label class="required" for="package">Consultation Package</label>
+        <select id="package" name="package" required>
+            <option value="">Select Package</option>
+            <option value="basic">Basic Package ($299)</option>
+            <option value="standard">Standard Package ($599)</option>
+            <option value="premium">Premium Package ($999)</option>
+        </select>
+    </div>
+</div>
+
+<script>
+// Add this to your existing JavaScript
+window.addEventListener('load', function() {
+    // Get the selected package from localStorage
+    const selectedPackage = localStorage.getItem('selectedPackage');
+    if (selectedPackage) {
+        // Set the package dropdown to the selected value
+        const packageSelect = document.getElementById('package');
+        packageSelect.value = selectedPackage.toLowerCase();
+    }
+});
+</script>
         <form id="studyAbroadForm">
     <!-- your existing form fields stay the same -->
 </form>
